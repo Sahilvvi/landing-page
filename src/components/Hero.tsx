@@ -103,23 +103,11 @@ export function Hero() {
       <div className="mint-rays pointer-events-none absolute inset-x-0 top-0 h-[720px]" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
         <div className="relative z-10 text-center lg:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full border border-line bg-white/80 px-4 py-1.5 text-sm font-medium text-ink-2 shadow-card backdrop-blur"
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-60" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald" />
-            </span>
-            Over ₹1.2 Cr in Expired Discounts Saved
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-6 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem]"
+            className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem]"
           >
             Turn Your Useless Scratch Cards into{" "}
             <span className="bg-gradient-to-r from-emerald-deep via-emerald to-emerald-light bg-clip-text text-transparent">
