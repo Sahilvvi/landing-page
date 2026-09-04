@@ -98,9 +98,33 @@ export function GetAppButton({
   );
 }
 
+function useActiveSection() {
+  const [active, setActive] = useState("");
+  useEffect(() => {
+    const ids = NAV_LINKS.map((l) => l.href.slice(1));
+    const els = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (els.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(`#${visible.target.id}`);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5] },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+  return active;
+}
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
+  const active = useActiveSection();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -111,42 +135,56 @@ export function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all ${
-        scrolled ? "py-2" : "py-4"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled ? "py-2" : "py-3 sm:py-4"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div
-          className={`flex items-center justify-between rounded-2xl px-4 py-2.5 transition-all ${
-            scrolled ? "glass shadow-card" : ""
+          className={`glass flex h-16 items-center justify-between gap-4 rounded-full pl-4 pr-2 transition-shadow duration-300 sm:pl-5 ${
+            scrolled ? "shadow-lift" : "shadow-card"
           }`}
         >
-          <a href="#top" aria-label="Couponbaazi home">
+          <a href="#top" aria-label="Couponbaazi home" className="shrink-0">
             <Logo />
           </a>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-            {NAV_LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="rounded-full px-3.5 py-2 text-sm font-medium text-ink-2 transition hover:bg-white hover:text-emerald-deep"
-              >
-                {l.label}
-              </a>
-            ))}
+          <nav
+            className="hidden items-center gap-0.5 rounded-full bg-bg/70 p-1 lg:flex"
+            aria-label="Primary"
+          >
+            {NAV_LINKS.map((l) => {
+              const isActive = active === l.href;
+              return (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`relative whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold tracking-tight transition xl:px-4 xl:text-sm ${
+                    isActive
+                      ? "bg-white text-emerald-deep shadow-sm"
+                      : "text-ink-2 hover:bg-white/70 hover:text-emerald-deep"
+                  }`}
+                >
+                  {l.label}
+                </a>
+              );
+            })}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            <a href={STORE_LINKS.merchant} className="btn-secondary !py-2.5 text-sm">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <a
+              href={STORE_LINKS.merchant}
+              className="whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold text-ink-2 transition hover:bg-white hover:text-emerald-deep"
+            >
               Merchant Portal
             </a>
-            <GetAppButton className="btn-primary !py-2.5 text-sm" />
+            <GetAppButton className="btn-primary !px-5 !py-2.5 whitespace-nowrap text-sm" />
           </div>
 
           <button
             type="button"
-            className="rounded-full p-2 lg:hidden"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-ink transition hover:bg-white lg:hidden"
             onClick={() => setMenu((m) => !m)}
             aria-label={menu ? "Close menu" : "Open menu"}
             aria-expanded={menu}
@@ -158,7 +196,7 @@ export function Header() {
         <AnimatePresence>
           {menu && (
             <motion.div
-              className="card mt-2 p-4 lg:hidden"
+              className="glass mt-2 rounded-3xl p-4 shadow-lift lg:hidden"
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}

@@ -2,8 +2,8 @@ export const NAV_LINKS = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "P2P Exchange", href: "#features" },
   { label: "Expiry Tracker", href: "#expiry" },
-  { label: "Clappy Birds Game", href: "#clappy-birds" },
-  { label: "Couponbaazi for Business", href: "#business" },
+  { label: "Clappy Birds", href: "#clappy-birds" },
+  { label: "For Business", href: "#business" },
 ];
 
 export const STORE_LINKS = {
@@ -99,6 +99,18 @@ export const FAQS = [
   {
     q: "Which apps are supported?",
     a: "Google Pay, PhonePe, Paytm, CRED, Swiggy, Zomato, Zepto, Blinkit, Uber, and all major e-commerce platforms. If a reward comes as a code or screenshot, you can list it.",
+  },
+  {
+    q: "What happens if a coupon expires before I trade it?",
+    a: "The Smart Expiry Tracker nudges you at 7 days, 2 days and 12 hours before expiry, and can auto-suggest listing it for swap. Expired codes are removed from the marketplace automatically so nobody receives a dead coupon.",
+  },
+  {
+    q: "How does the Clappy Birds reward work?",
+    a: "You get three free attempts every 24 hours. Your best score is placed on the daily leaderboard, and the top scorers receive ₹100 Amazon Gift Cards when the board resets. No purchase or trade is required to play.",
+  },
+  {
+    q: "Is my personal data or coupon code shared publicly?",
+    a: "No. Listings show only the brand, value, minimum order and expiry. The actual code is revealed inside the private, end-to-end trade chat only after both users accept the swap.",
   },
 ];
 

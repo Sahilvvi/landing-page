@@ -1,6 +1,20 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { NAV_LINKS, STORE_LINKS } from "@/lib/data";
 import { Logo } from "./Logo";
-import { StoreButtons } from "./ui";
+import { BrandBadge, StoreButtons } from "./ui";
+import { EASE, Reveal } from "./motion";
+
+const FLOATERS = [
+  { id: "zomato", x: "2%", y: "14%", d: 0 },
+  { id: "gpay", x: "3%", y: "70%", d: 0.8 },
+  { id: "myntra", x: "50%", y: "8%", d: 0.4 },
+  { id: "swiggy", x: "93%", y: "10%", d: 1.2 },
+  { id: "amazon", x: "58%", y: "78%", d: 0.6 },
+  { id: "phonepe", x: "92%", y: "74%", d: 1.6 },
+];
 
 const LEGAL = [
   { label: "Terms of Service", href: "#" },
@@ -44,23 +58,63 @@ export function Footer() {
   return (
     <footer className="relative border-t border-line bg-white">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="rounded-[2rem] bg-gradient-to-br from-emerald-tint via-bg to-amber/20 p-8 sm:p-12">
-          <div className="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
-            <div>
-              <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-                Swap. Sell. Save. Start trading your unused coupons today.
-              </h2>
-              <p className="mt-3 text-muted">
-                Free to join. Free to trade. Three free Clappy Birds plays waiting for you.
-              </p>
-            </div>
-            <div className="lg:justify-self-end">
-              <StoreButtons appStore={STORE_LINKS.appStore} playStore={STORE_LINKS.playStore} />
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-tint via-bg to-amber/25 p-8 shadow-card ring-1 ring-line sm:p-12">
+            <motion.div
+              aria-hidden
+              animate={{ x: ["-10%", "10%", "-10%"], y: ["-5%", "5%", "-5%"] }}
+              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full bg-emerald-light/40 blur-3xl"
+            />
+            <motion.div
+              aria-hidden
+              animate={{ x: ["10%", "-10%", "10%"], y: ["5%", "-5%", "5%"] }}
+              transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full bg-amber/30 blur-3xl"
+            />
+            {FLOATERS.map((f) => (
+              <motion.div
+                key={f.id}
+                aria-hidden
+                className="pointer-events-none absolute hidden lg:block"
+                style={{ left: f.x, top: f.y }}
+                initial={{ opacity: 0, scale: 0.6 }}
+                whileInView={{ opacity: 0.75, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + f.d * 0.3, duration: 0.5, ease: EASE }}
+              >
+                <motion.div
+                  animate={{ y: [0, -10, 0], rotate: [-6, 6, -6] }}
+                  transition={{ duration: 5 + f.d, repeat: Infinity, ease: "easeInOut", delay: f.d }}
+                >
+                  <BrandBadge id={f.id} />
+                </motion.div>
+              </motion.div>
+            ))}
+            <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+              <div className="lg:pl-24 lg:pr-8">
+                <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                  Swap. Sell. Save.{" "}
+                  <span className="bg-gradient-to-r from-emerald-deep to-emerald bg-clip-text text-transparent">
+                    Start trading your unused coupons today.
+                  </span>
+                </h2>
+                <p className="mt-3 text-muted">
+                  Free to join. Free to trade. Three free Clappy Birds plays waiting for you.
+                </p>
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="lg:justify-self-end"
+              >
+                <StoreButtons appStore={STORE_LINKS.appStore} playStore={STORE_LINKS.playStore} />
+              </motion.div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="mt-14 grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <Reveal delay={0.1} className="mt-14 grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm text-muted">
@@ -72,7 +126,7 @@ export function Footer() {
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-line text-ink-2 transition hover:bg-emerald-tint hover:text-emerald-deep"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-line text-ink-2 transition-all duration-300 hover:-translate-y-1 hover:border-emerald/40 hover:bg-emerald-tint hover:text-emerald-deep hover:shadow-md"
                 >
                   <Icon d={s.d} />
                 </a>
@@ -80,31 +134,33 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h4 className="font-display text-sm font-bold text-ink">Product</h4>
+            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-ink">Product</h4>
             <ul className="mt-4 space-y-2.5 text-sm text-muted">
               {NAV_LINKS.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="transition hover:text-emerald-deep">
-                    {l.label}
+                  <a href={l.href} className="group inline-flex items-center gap-1 transition hover:text-emerald-deep">
+                    <span className="transition-transform group-hover:translate-x-0.5">{l.label}</span>
+                    <ArrowUpRight className="h-3 w-3 opacity-0 transition-all group-hover:opacity-100" />
                   </a>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="font-display text-sm font-bold text-ink">Legal</h4>
+            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-ink">Legal</h4>
             <ul className="mt-4 space-y-2.5 text-sm text-muted">
               {LEGAL.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="transition hover:text-emerald-deep">
-                    {l.label}
+                  <a href={l.href} className="group inline-flex items-center gap-1 transition hover:text-emerald-deep">
+                    <span className="transition-transform group-hover:translate-x-0.5">{l.label}</span>
+                    <ArrowUpRight className="h-3 w-3 opacity-0 transition-all group-hover:opacity-100" />
                   </a>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="font-display text-sm font-bold text-ink">Get the app</h4>
+            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-ink">Get the app</h4>
             <ul className="mt-4 space-y-2.5 text-sm text-muted">
               <li>
                 <a href={STORE_LINKS.appStore} className="transition hover:text-emerald-deep">
@@ -123,7 +179,7 @@ export function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+        </Reveal>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center">
           <span>© {new Date().getFullYear()} Couponbaazi. All rights reserved.</span>

@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Bell, Gamepad2, MessageCircle, ShieldCheck, Store, Star } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bell, MessageCircle, Search, ShieldCheck, Store, Star } from "lucide-react";
 import { BrandBadge, Pill, SectionHeading } from "./ui";
+import { CountUp, EASE, useLoop } from "./motion";
 
 function MarketplaceDemo() {
   const listings = [
@@ -11,33 +12,68 @@ function MarketplaceDemo() {
     { id: "myntra", title: "Myntra ₹500", meta: "Min ₹1,999 · 20d left", cat: "Fashion" },
     { id: "uber", title: "Uber ₹150", meta: "3 rides · 9d left", cat: "Travel" },
   ];
+  const step = useLoop(listings.length + 1, 1500);
+  const hot = step < listings.length ? step : -1;
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      {listings.map((l, i) => (
-        <motion.div
-          key={l.id}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.08 }}
-          className="rounded-2xl border border-line bg-white p-4 shadow-card"
-        >
-          <div className="flex items-center justify-between">
-            <BrandBadge id={l.id} size="sm" />
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted">{l.cat}</span>
-          </div>
-          <div className="mt-3 font-display text-sm font-bold text-ink">{l.title}</div>
-          <div className="text-xs text-muted">{l.meta}</div>
-          <div className="mt-3 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1 text-[11px] text-muted">
-              <Star className="h-3 w-3 fill-amber text-amber" /> 4.9 · verified
-            </span>
-            <button type="button" className="rounded-full bg-emerald-tint px-3 py-1 text-[11px] font-bold text-emerald-deep">
-              Request swap
-            </button>
-          </div>
-        </motion.div>
-      ))}
+    <div className="relative">
+      <div className="mb-3 flex items-center gap-2 rounded-2xl border border-line bg-white/80 px-3 py-2 text-xs text-muted shadow-card backdrop-blur">
+        <Search className="h-3.5 w-3.5" />
+        <span className="flex-1">Search brands, categories…</span>
+        <span className="rounded-full bg-emerald-tint px-2 py-0.5 text-[10px] font-bold text-emerald-deep">
+          <CountUp to={412} suffix=" live" />
+        </span>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 [perspective:1000px]">
+        {listings.map((l, i) => {
+          const isHot = i === hot;
+          return (
+            <motion.div
+              key={l.id}
+              initial={{ opacity: 0, y: 20, rotateX: -8 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5, ease: EASE }}
+              animate={{ scale: isHot ? 1.03 : 1, y: isHot ? -4 : 0 }}
+              className={`relative rounded-2xl border bg-white p-4 transition-shadow duration-500 ${
+                isHot ? "border-emerald/40 shadow-lift" : "border-line shadow-card"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <BrandBadge id={l.id} size="sm" />
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-muted">{l.cat}</span>
+              </div>
+              <div className="mt-3 font-display text-sm font-bold text-ink">{l.title}</div>
+              <div className="text-xs text-muted">{l.meta}</div>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1 text-[11px] text-muted">
+                  <Star className="h-3 w-3 fill-amber text-amber" /> 4.9 · verified
+                </span>
+                <motion.span
+                  animate={isHot ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className={`rounded-full px-3 py-1 text-[11px] font-bold transition-colors ${
+                    isHot ? "bg-emerald text-white" : "bg-emerald-tint text-emerald-deep"
+                  }`}
+                >
+                  {isHot ? "Requesting…" : "Request swap"}
+                </motion.span>
+              </div>
+              <AnimatePresence>
+                {isHot && (
+                  <motion.span
+                    initial={{ opacity: 0, y: 6, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className="absolute -right-2 -top-2 rounded-full bg-ink px-2 py-0.5 text-[10px] font-semibold text-white shadow-lift"
+                  >
+                    2 people viewing
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -49,45 +85,77 @@ function ChatDemo() {
     { me: false, t: "Yes, fresh from CRED. Valid till 30 Jun." },
     { me: true, t: "Deal. Sharing my code in the secure box 🔒" },
   ];
+  const step = useLoop(msgs.length + 3, 1300);
+  const shown = Math.min(step, msgs.length);
+  const typing = step < msgs.length;
+  const done = step >= msgs.length + 1;
   return (
-    <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="rounded-3xl border border-line bg-white p-4 shadow-lift">
       <div className="flex items-center gap-3 border-b border-line pb-3">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-amber to-orange font-bold text-white">
+        <span className="relative grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-amber to-orange font-bold text-white">
           R
+          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald" />
         </span>
-        <div>
+        <div className="flex-1">
           <div className="text-sm font-bold text-ink">Riya S.</div>
           <div className="flex items-center gap-1 text-[11px] text-emerald-deep">
             <ShieldCheck className="h-3 w-3" /> Phone verified · 42 trades
           </div>
         </div>
+        <span className="rounded-full bg-bg-2 px-2 py-0.5 text-[10px] font-semibold text-muted">Zomato ↔ Myntra</span>
       </div>
-      <div className="mt-3 space-y-2 text-xs">
-        {msgs.map((m, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 * i }}
-            className={`max-w-[85%] rounded-2xl px-3 py-2 ${
-              m.me
-                ? "ml-auto rounded-br-sm bg-emerald text-white"
-                : "rounded-bl-sm bg-bg-2 text-ink"
-            }`}
-          >
-            {m.t}
-          </motion.div>
-        ))}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1.4 }}
-          className="mx-auto mt-3 w-fit rounded-full bg-ink px-3 py-1 text-[11px] font-semibold text-white"
-        >
-          Both users confirmed · Trade complete
-        </motion.div>
+      <div className="mt-3 min-h-[228px] space-y-2 text-xs">
+        <AnimatePresence initial={false}>
+          {msgs.slice(0, shown).map((m, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className={`max-w-[85%] rounded-2xl px-3 py-2 ${
+                m.me ? "ml-auto rounded-br-sm bg-emerald text-white" : "rounded-bl-sm bg-bg-2 text-ink"
+              }`}
+            >
+              {m.t}
+            </motion.div>
+          ))}
+          {typing && (
+            <motion.div
+              key="typing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`flex w-14 justify-center gap-1 rounded-2xl px-3 py-2.5 ${
+                msgs[shown].me ? "ml-auto bg-emerald/80" : "bg-bg-2"
+              }`}
+            >
+              {[0, 1, 2].map((d) => (
+                <motion.span
+                  key={d}
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: d * 0.15 }}
+                  className={`h-1.5 w-1.5 rounded-full ${msgs[shown].me ? "bg-white" : "bg-muted"}`}
+                />
+              ))}
+            </motion.div>
+          )}
+          {done && (
+            <motion.div
+              key="done"
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 18 }}
+              className="mx-auto mt-3 flex w-fit items-center gap-2 rounded-full bg-ink px-3 py-1.5 text-[11px] font-semibold text-white shadow-lift"
+            >
+              <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald">
+                <ShieldCheck className="h-3 w-3" />
+              </span>
+              Both users confirmed · Trade complete
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -95,80 +163,84 @@ function ChatDemo() {
 
 function ExpiryDemo() {
   const items = [
-    { id: "swiggy", t: "Swiggy 50% off", days: 2, pct: 92, tone: "bg-crimson" },
-    { id: "phonepe", t: "PhonePe ₹75 scratch", days: 9, pct: 60, tone: "bg-orange" },
-    { id: "amazon", t: "Amazon ₹100 gift card", days: 24, pct: 25, tone: "bg-emerald" },
+    { id: "swiggy", t: "Swiggy 50% off", days: 2, pct: 92, tone: "from-orange to-crimson" },
+    { id: "phonepe", t: "PhonePe ₹75 scratch", days: 9, pct: 60, tone: "from-amber to-orange" },
+    { id: "amazon", t: "Amazon ₹100 gift card", days: 24, pct: 25, tone: "from-emerald-light to-emerald" },
   ];
+  const step = useLoop(4, 1800);
   return (
-    <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
+    <div className="relative rounded-3xl border border-line bg-white p-4 shadow-lift">
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-ink">Expiry tracker</span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-crimson/10 px-2 py-0.5 text-[10px] font-bold text-crimson">
+        <motion.span
+          animate={{ scale: [1, 1.08, 1] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          className="inline-flex items-center gap-1 rounded-full bg-crimson/10 px-2 py-0.5 text-[10px] font-bold text-crimson"
+        >
           <Bell className="h-3 w-3" /> 1 urgent
-        </span>
+        </motion.span>
       </div>
       <div className="mt-4 space-y-4">
         {items.map((it, i) => (
-          <div key={it.id}>
+          <motion.div
+            key={it.id}
+            animate={{ opacity: step === 3 || step === i ? 1 : 0.55 }}
+            transition={{ duration: 0.4 }}
+          >
             <div className="flex items-center justify-between text-xs">
               <span className="flex items-center gap-2 font-semibold text-ink">
                 <BrandBadge id={it.id} size="sm" /> {it.t}
               </span>
-              <span className="text-muted">{it.days} days left</span>
+              <span className={`font-semibold ${it.days <= 2 ? "text-crimson" : "text-muted"}`}>
+                {it.days} days left
+              </span>
             </div>
             <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-bg-2">
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${it.pct}%` }}
                 viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.15 * i, ease: "easeOut" }}
-                className={`h-full rounded-full ${it.tone}`}
-              />
+                transition={{ duration: 1.2, delay: 0.15 * i, ease: EASE }}
+                className={`relative h-full rounded-full bg-gradient-to-r ${it.tone}`}
+              >
+                <motion.span
+                  animate={{ x: ["-100%", "250%"] }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: "linear", delay: i * 0.4 }}
+                  className="absolute inset-y-0 w-1/3 bg-white/40 blur-[2px]"
+                />
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-      <div className="mt-4 rounded-xl bg-emerald-tint p-3 text-xs text-emerald-deep">
-        <span className="font-bold">Nudge sent:</span> “Your Swiggy 50% expires in 2 days — list it for swap now?”
-      </div>
-    </div>
-  );
-}
-
-function ClappyTeaser() {
-  return (
-    <div className="relative overflow-hidden rounded-2xl bg-ink p-4 text-white shadow-card">
-      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.08)_1px,transparent_1px)] [background-size:16px_16px]" />
-      <div className="relative">
-        <div className="flex items-center justify-between font-mono text-[11px] text-emerald-light">
-          <span>SCORE 0184</span>
-          <span>3 PLAYS LEFT</span>
-        </div>
-        <div className="relative mt-3 h-28 overflow-hidden rounded-xl bg-gradient-to-b from-[#5cc8ff] to-[#b9ecff]">
-          <motion.div
-            animate={{ x: [160, -40] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-0 right-0 w-8"
-          >
-            <div className="h-10 w-full rounded-t-md bg-emerald-deep" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [30, 14, 34, 18, 30] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute left-12 h-7 w-9 rounded-full bg-amber shadow-md"
-          >
-            <span className="absolute -right-1 top-2 h-0 w-0 border-y-[5px] border-l-[8px] border-y-transparent border-l-orange" />
-            <span className="absolute left-5 top-1.5 h-2 w-2 rounded-full bg-white">
-              <span className="absolute left-1 top-0.5 h-1 w-1 rounded-full bg-ink" />
-            </span>
-          </motion.div>
-          <div className="absolute inset-x-0 bottom-0 h-3 bg-[#7bc043]" />
-        </div>
-        <div className="mt-3 flex items-center justify-between text-xs">
-          <span className="text-white/70">Daily top 3 win</span>
-          <span className="rounded-full bg-amber px-2.5 py-1 font-bold text-ink">₹100 Amazon Gift Card</span>
-        </div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step === 3 ? "nudge" : "idle"}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          className="mt-4 flex items-start gap-2 rounded-2xl bg-emerald-tint p-3 text-xs text-emerald-deep"
+        >
+          <Bell className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>
+            <span className="font-bold">{step === 3 ? "Nudge sent: " : "Watching: "}</span>
+            {step === 3
+              ? "“Your Swiggy 50% expires in 2 days — list it for swap now?”"
+              : "3 coupons tracked · reminders at 7d, 2d and 12h"}
+          </span>
+        </motion.div>
+      </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1.2, duration: 0.5, ease: EASE }}
+        className="absolute -right-3 -top-4 rounded-2xl bg-ink px-3 py-2 text-[11px] font-semibold text-white shadow-lift"
+      >
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-amber" /> Push · Swiggy 50% expiring soon
+        </span>
+      </motion.div>
     </div>
   );
 }
@@ -201,20 +273,11 @@ const FEATURES = [
     bullets: ["Auto-detected expiry", "Timed push reminders", "Swap-before-expiry prompts"],
     demo: <ExpiryDemo />,
   },
-  {
-    id: "arcade",
-    icon: Gamepad2,
-    eyebrow: "Clappy Birds Arcade",
-    title: "Saving money should be fun. So we made it a game.",
-    body: "Three free plays every 24 hours. Top the daily leaderboard and win ₹100 Amazon Gift Cards — real rewards for a two-minute break.",
-    bullets: ["3 complimentary attempts / day", "Daily leaderboard resets", "₹100 Amazon Gift Cards"],
-    demo: <ClappyTeaser />,
-  },
 ];
 
 export function Features() {
   return (
-    <section className="relative py-20 sm:py-28">
+    <section className="relative overflow-hidden py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Core features"
@@ -247,12 +310,19 @@ export function Features() {
                   <p className="mt-4 text-lg text-muted">{f.body}</p>
                   <ul className="mt-6 space-y-2">
                     {f.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2 text-sm font-medium text-ink-2">
+                      <motion.li
+                        key={b}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 + f.bullets.indexOf(b) * 0.1 }}
+                        className="flex items-center gap-2 text-sm font-medium text-ink-2"
+                      >
                         <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-tint text-emerald-deep">
                           <ShieldCheck className="h-3 w-3" />
                         </span>
                         {b}
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
                 </motion.div>
@@ -263,7 +333,12 @@ export function Features() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className={`relative ${flip ? "lg:order-1" : ""}`}
                 >
-                  <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-emerald-tint via-white to-amber/20 blur-2xl" />
+                  <motion.div
+                    aria-hidden
+                    animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.04, 1] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-to-br from-emerald-light/40 via-white to-amber/25 blur-2xl"
+                  />
                   {f.demo}
                 </motion.div>
               </div>
