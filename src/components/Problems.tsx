@@ -181,7 +181,7 @@ export function Problems() {
         <SectionHeading
           eyebrow="The reward dilemma"
           title="Why ₹1,000s of your rewards quietly die every month"
-          sub="Digital scratch cards and cashback coupons are everywhere — and almost none of them are for the things you actually buy."
+          sub="There is no shortage of coupons in your phone, just a shortage of useful ones."
         />
         <motion.div
           className="mt-14 grid gap-6 md:grid-cols-3 [perspective:1400px]"

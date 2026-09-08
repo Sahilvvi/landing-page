@@ -78,7 +78,7 @@ export const STEPS = [
   {
     n: "02",
     title: "Browse & Request Trade",
-    body: "Filter active community listings across Dining, Grocery, Fashion, and Travel. Send a direct swap proposal with one of your listed coupons.",
+    body: "Filter active community listings across dining, grocery, fashion, travel and more. Send a direct swap proposal with one of your listed coupons.",
   },
   {
     n: "03",

@@ -16,9 +16,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Couponbaazi — Swap. Sell. Save.",
   description:
-    "India's peer-to-peer coupon trading platform. Upload unused vouchers from GPay, PhonePe, or Zomato, trade directly with real users via chat, and eliminate expired reward waste.",
+    "India's first peer-to-peer coupon exchange platform. Get reminders before coupons expire and get discounted products from small businesses & individuals.",
   openGraph: {
-    title: "Couponbaazi — Turn Useless Scratch Cards into Discounts You Actually Use",
+    title: "Couponbaazi — Turn Your Earned Vouchers into Discounts You Actually Need",
     description:
       "Trade unused coupons with real users, track expiry automatically, and win ₹100 Amazon Gift Cards daily in Clappy Birds.",
     type: "website",

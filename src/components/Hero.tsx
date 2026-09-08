@@ -3,10 +3,15 @@
 import dynamic from "next/dynamic";
 import { useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Trophy } from "lucide-react";
+import { Check, Sparkles, Trophy } from "lucide-react";
 import { PhoneScreen } from "./PhoneScreen";
-import { BrandBadge, QRBadge, StoreButtons } from "./ui";
+import { BrandBadge, StoreButtons } from "./ui";
 import { STORE_LINKS, LIVE_TRADES } from "@/lib/data";
+
+const HERO_POINTS = [
+  "Get reminders before coupons expire",
+  "Get discounted products from small businesses & individuals",
+];
 
 const PhoneScene = dynamic(() => import("./PhoneScene").then((m) => m.PhoneScene), {
   ssr: false,
@@ -109,22 +114,30 @@ export function Hero() {
             transition={{ delay: 0.1 }}
             className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem]"
           >
-            Turn Your Useless Scratch Cards into{" "}
+            Turn Your Earned Vouchers into{" "}
             <span className="bg-gradient-to-r from-emerald-deep via-emerald to-emerald-light bg-clip-text text-transparent">
-              Discounts You Actually Use.
+              Discounts You Actually Need.
             </span>
           </motion.h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mx-auto mt-6 max-w-xl text-lg text-muted lg:mx-0"
+            className="mx-auto mt-6 max-w-xl lg:mx-0"
           >
-            India&apos;s peer-to-peer coupon trading platform. Upload unused vouchers
-            from GPay, PhonePe, or Zomato, trade directly with real users via chat,
-            and eliminate expired reward waste.
-          </motion.p>
+            <p className="text-lg font-semibold text-ink-2">
+              India&apos;s first peer-to-peer coupon exchange platform.
+            </p>
+            <ul className="mt-3 space-y-2 text-left text-base text-muted">
+              {HERO_POINTS.map((t) => (
+                <li key={t} className="flex items-start gap-2.5">
+                  <Check className="mt-1 h-4 w-4 shrink-0 text-emerald" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -133,26 +146,6 @@ export function Hero() {
             className="mt-8 flex flex-col items-center gap-5 sm:flex-row lg:items-center"
           >
             <StoreButtons appStore={STORE_LINKS.appStore} playStore={STORE_LINKS.playStore} />
-            <div className="hidden items-center gap-3 sm:flex">
-              <QRBadge size={64} />
-              <span className="text-xs leading-tight text-muted">
-                Scan to
-                <br />
-                download
-              </span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-2 lg:justify-start"
-          >
-            <span className="text-xs font-medium text-muted">Works with</span>
-            {["gpay", "phonepe", "paytm", "zomato", "swiggy", "zepto"].map((b) => (
-              <BrandBadge key={b} id={b} size="sm" />
-            ))}
           </motion.div>
         </div>
 
