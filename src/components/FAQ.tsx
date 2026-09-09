@@ -6,17 +6,15 @@ import {
   Plus,
   ShieldCheck,
   Wallet,
-  Smartphone,
   TimerOff,
   Gamepad2,
-  Lock,
   MessageCircle,
 } from "lucide-react";
 import { FAQS } from "@/lib/data";
 import { SectionHeading } from "./ui";
 import { EASE, fadeUp, stagger } from "./motion";
 
-const ICONS = [ShieldCheck, Wallet, Smartphone, TimerOff, Gamepad2, Lock];
+const ICONS = [ShieldCheck, Wallet, TimerOff, Gamepad2];
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
