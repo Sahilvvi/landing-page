@@ -1,7 +1,18 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, MessageCircle, Search, ShieldCheck, Store, Star } from "lucide-react";
+import {
+  Bell,
+  Bookmark,
+  AtSign,
+  MessageCircle,
+  Search,
+  Share2,
+  ShieldCheck,
+  Store,
+  Star,
+  Users,
+} from "lucide-react";
 import { BrandBadge, Pill, SectionHeading } from "./ui";
 import { CountUp, EASE, useLoop } from "./motion";
 
@@ -83,7 +94,7 @@ function ChatDemo() {
     { me: false, t: "Hi Aarav! I'd like your Zomato 30% for my Myntra ₹500." },
     { me: true, t: "Sounds fair. Is the Myntra code unused?" },
     { me: false, t: "Yes, fresh from CRED. Valid till 30 Jun." },
-    { me: true, t: "Deal. Sharing my code in the secure box 🔒" },
+    { me: true, t: "Deal. Let's swap 🤝" },
   ];
   const step = useLoop(msgs.length + 3, 1300);
   const shown = Math.min(step, msgs.length);
@@ -245,6 +256,97 @@ function ExpiryDemo() {
   );
 }
 
+const SELLER_POINTS = [
+  "Save coupons in your locker for later",
+  "Chat directly with the seller — no personal details shared",
+  "Visit the seller's social media for credibility",
+  "Share the coupon with others",
+];
+
+function SellerDemo({ kind }: { kind: "business" | "individual" }) {
+  const isBiz = kind === "business";
+  const seller = isBiz
+    ? { name: "Brew & Bean Café", meta: "Local business · Indiranagar", initial: "B", handle: "@brewandbean" }
+    : { name: "Kabir M.", meta: "Individual seller · 28 trades", initial: "K", handle: "@kabir.m" };
+  const offer = isBiz
+    ? { title: "Flat 40% off on any 2 coffees", sub: "Valid till 30 Jun · 120 left", price: "Free to claim" }
+    : { title: "Myntra ₹500 voucher", sub: "Min ₹1,999 · 20d left", price: "Buy for ₹350" };
+  const actions = [
+    { icon: Bookmark, label: "Save to locker" },
+    { icon: MessageCircle, label: "Chat" },
+    { icon: AtSign, label: "Socials" },
+    { icon: Share2, label: "Share" },
+  ];
+  const step = useLoop(actions.length + 1, 1400);
+  const active = step < actions.length ? step : -1;
+  const toasts = ["Saved to your locker", "Chat opened · details stay private", `Opening ${seller.handle}`, "Share link copied"];
+  return (
+    <div className="relative rounded-3xl border border-line bg-white p-4 shadow-lift">
+      <div className="flex items-center gap-3">
+        <span
+          className={`grid h-11 w-11 place-items-center rounded-2xl font-display text-lg font-bold text-white ${
+            isBiz ? "bg-gradient-to-br from-emerald to-emerald-deep" : "bg-gradient-to-br from-amber to-orange"
+          }`}
+        >
+          {seller.initial}
+        </span>
+        <div className="flex-1">
+          <div className="flex items-center gap-1.5 text-sm font-bold text-ink">
+            {seller.name}
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald" />
+          </div>
+          <div className="text-[11px] text-muted">{seller.meta}</div>
+        </div>
+        <span className="inline-flex items-center gap-1 rounded-full bg-bg-2 px-2 py-0.5 text-[10px] font-semibold text-muted">
+          <Star className="h-3 w-3 fill-amber text-amber" /> 4.8
+        </span>
+      </div>
+      <div className="mt-4 overflow-hidden rounded-2xl border border-dashed border-emerald/40 bg-gradient-to-br from-emerald-tint to-white p-4">
+        <div className="flex items-center justify-between">
+          <span className="rounded-full bg-emerald px-2 py-0.5 text-[10px] font-bold text-white">COUPON</span>
+          <span className="text-[10px] font-semibold text-emerald-deep">{offer.price}</span>
+        </div>
+        <div className="mt-3 font-display text-lg font-extrabold text-ink">{offer.title}</div>
+        <div className="text-xs text-muted">{offer.sub}</div>
+      </div>
+      <div className="mt-4 grid grid-cols-4 gap-2">
+        {actions.map((a, i) => {
+          const Icon = a.icon;
+          const on = i === active;
+          return (
+            <motion.div
+              key={a.label}
+              animate={{ y: on ? -3 : 0, scale: on ? 1.04 : 1 }}
+              className={`flex flex-col items-center gap-1.5 rounded-xl px-1 py-2.5 text-center text-[10px] font-semibold transition-colors duration-300 ${
+                on ? "bg-ink text-white shadow-lift" : "bg-bg-2 text-ink-2"
+              }`}
+            >
+              <Icon className={`h-4 w-4 ${on ? "text-emerald-light" : "text-emerald-deep"}`} />
+              <span className="leading-tight">{a.label}</span>
+            </motion.div>
+          );
+        })}
+      </div>
+      <div className="mt-3 h-8">
+        <AnimatePresence mode="wait">
+          {active >= 0 && (
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3, ease: EASE }}
+              className="flex items-center gap-2 rounded-xl bg-emerald-tint px-3 py-1.5 text-[11px] font-semibold text-emerald-deep"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" /> {toasts[active]}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
 const FEATURES = [
   {
     id: "features",
@@ -260,8 +362,8 @@ const FEATURES = [
     icon: MessageCircle,
     eyebrow: "Direct Trade Chat",
     title: "Negotiate 1-on-1. Settle with confidence.",
-    body: "Every swap opens a dedicated chat between the two traders. Confirm details, share codes inside a secure box, complete the trade, and rate each other — reputation keeps the community honest.",
-    bullets: ["Phone-verified traders", "Secure code sharing", "Public trust ratings"],
+    body: "Every swap opens a dedicated chat between the two traders. Confirm details, complete the trade, and rate each other — reputation keeps the community honest.",
+    bullets: ["Phone-verified traders", "Private in-app chat", "Public trust ratings"],
     demo: <ChatDemo />,
   },
   {
@@ -272,6 +374,24 @@ const FEATURES = [
     body: "Couponbaazi reads the expiry date the moment you upload and nudges you well before it lapses — with a one-tap shortcut to list it for swap so someone else gets the value instead of the void.",
     bullets: ["Auto-detected expiry", "Timed push reminders", "Swap-before-expiry prompts"],
     demo: <ExpiryDemo />,
+  },
+  {
+    id: "small-business",
+    icon: Store,
+    eyebrow: "Buy Directly from Small Businesses",
+    title: "Real offers from local shops and growing brands.",
+    body: "Small businesses publish their own coupons on Couponbaazi. Save the ones you like to your locker, chat with the business directly, check out their social media for credibility, and share the deal with friends.",
+    bullets: SELLER_POINTS,
+    demo: <SellerDemo kind="business" />,
+  },
+  {
+    id: "individual-sellers",
+    icon: Users,
+    eyebrow: "Buy from Individual Sellers",
+    title: "Pick up coupons other users don't need — at a discount.",
+    body: "Individuals list the vouchers they won't use. Save them to your locker for later, chat with the seller without sharing your personal details, verify them through their social profile, and pass the coupon on to others.",
+    bullets: SELLER_POINTS,
+    demo: <SellerDemo kind="individual" />,
   },
 ];
 
