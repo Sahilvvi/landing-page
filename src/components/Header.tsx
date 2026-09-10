@@ -21,7 +21,7 @@ export function useIsMobile() {
 
 export function GetAppButton({
   className = "btn-primary",
-  label = "Get the App",
+  label = "Download CB",
 }: {
   className?: string;
   label?: string;
@@ -177,7 +177,7 @@ export function Header() {
               href={STORE_LINKS.merchant}
               className="whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold text-ink-2 transition hover:bg-white hover:text-emerald-deep"
             >
-              Merchant Portal
+              Download CBz
             </a>
             <GetAppButton className="btn-primary !px-5 !py-2.5 whitespace-nowrap text-sm" />
           </div>
@@ -215,7 +215,7 @@ export function Header() {
               </nav>
               <div className="mt-3 flex flex-col gap-2">
                 <a href={STORE_LINKS.merchant} className="btn-secondary">
-                  Merchant Portal
+                  Download CBz
                 </a>
                 <GetAppButton />
               </div>

@@ -270,7 +270,7 @@ function SellerDemo({ kind }: { kind: "business" | "individual" }) {
     : { name: "Kabir M.", meta: "Individual seller · 28 trades", initial: "K", handle: "@kabir.m" };
   const offer = isBiz
     ? { title: "Flat 40% off on any 2 coffees", sub: "Valid till 30 Jun · 120 left", price: "Free to claim" }
-    : { title: "Myntra ₹500 voucher", sub: "Min ₹1,999 · 20d left", price: "Buy for ₹350" };
+    : { title: "Acoustic guitar", sub: "Second-hand · Good condition", price: "Priced at ₹700" };
   const actions = [
     { icon: Bookmark, label: "Save to locker" },
     { icon: MessageCircle, label: "Chat" },
@@ -388,8 +388,8 @@ const FEATURES = [
     id: "individual-sellers",
     icon: Users,
     eyebrow: "Buy from Individual Sellers",
-    title: "Pick up coupons other users don't need — at a discount.",
-    body: "Individuals list the vouchers they won't use. Save them to your locker for later, chat with the seller without sharing your personal details, verify them through their social profile, and pass the coupon on to others.",
+    title: "Purchase items other users don't need.",
+    body: "Individuals list items in the form of a coupon that they don't need. Looking for a second-hand laptop? Phone? Sofa? Or anything in general? Explore the Individual section.",
     bullets: SELLER_POINTS,
     demo: <SellerDemo kind="individual" />,
   },
