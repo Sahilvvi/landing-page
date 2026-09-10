@@ -45,6 +45,8 @@ const PERKS = [
   { icon: Megaphone, t: "Improve brand visibility" },
 ];
 
+const INDIVIDUAL_ITEMS = ["Jeans", "Laptop", "Watch", "Sofa", "Phone", "Anything else"];
+
 const AUDIENCE = [
   { icon: User, t: "Individual owners" },
   { icon: Store, t: "Service providers" },
@@ -517,6 +519,44 @@ export function Business() {
           >
             Get started with CBz <ArrowRight className="h-4 w-4" />
           </a>
+        </motion.div>
+
+        {/* Individuals */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          className="mt-6 grid items-center gap-8 rounded-[2rem] border border-line bg-gradient-to-br from-emerald-tint to-white p-8 shadow-card lg:grid-cols-[1fr_auto]"
+        >
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-deep">Not just for businesses</p>
+            <h3 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
+              CBz is for individuals who want to sell anything.
+            </h3>
+            <p className="mt-3 max-w-2xl text-muted">
+              Jeans, laptop, watch, sofa &mdash; whatever you want to sell, create a coupon for it and get interested
+              buyers within minutes. No spammers or bots, just real and interested buyers.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {INDIVIDUAL_ITEMS.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-ink-2 ring-1 ring-line"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+            <span className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-ink shadow-card">
+              <Zap className="h-4 w-4 text-emerald" /> Buyers within minutes
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-ink shadow-card">
+              <Users className="h-4 w-4 text-emerald" /> Real people, no bots
+            </span>
+          </div>
         </motion.div>
       </div>
     </section>
